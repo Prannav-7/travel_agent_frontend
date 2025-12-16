@@ -1,0 +1,270 @@
+/* Netflix Intro Styles */
+.intro-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    perspective: 1000px;
+}
+
+.logo-3d-container {
+    animation: logoEntrance 2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform-style: preserve-3d;
+}
+
+.intro-logo-wrapper {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    margin: 0 auto;
+}
+
+.intro-logo-image {
+    width: 300px;
+    height: 300px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 80px rgba(255, 255, 255, 0.4)) drop-shadow(0 0 40px rgba(255, 255, 255, 0.3));
+    animation: logoGlow 2s ease-in-out infinite alternate, logoFloat 4s ease-in-out infinite, logoDissolve 1s ease-in 3.5s forwards;
+}
+
+.intro-logo-svg {
+    width: 250px;
+    height: 250px;
+    filter: drop-shadow(0 0 60px rgba(59, 89, 152, 0.8)) drop-shadow(0 0 30px rgba(220, 20, 60, 0.6));
+    animation: logoGlow 2s ease-in-out infinite alternate, logoRotate 4s ease-in-out, logoDissolve 1s ease-in 3.5s forwards;
+}
+
+.intro-logo {
+    width: 200px;
+    height: 200px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 60px rgba(139, 92, 246, 0.8));
+    animation: logoGlow 2s ease-in-out infinite alternate, logoRotate 4s ease-in-out;
+}
+
+/* Particle powder effect */
+.particle {
+    position: absolute;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(200, 200, 255, 0.6) 50%, transparent 100%);
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+    animation: particleFloat 1.5s ease-out forwards;
+    transform-origin: center;
+}
+
+@keyframes particleFloat {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+    }
+    50% {
+        opacity: 0.8;
+    }
+    100% {
+        opacity: 0;
+        transform: translate(
+            calc((random() - 0.5) * 200px),
+            calc((random() - 0.5) * 200px)
+        ) scale(0.2);
+    }
+}
+
+@keyframes logoDissolve {
+    0% {
+        opacity: 1;
+        filter: drop-shadow(0 0 60px rgba(59, 89, 152, 0.8)) drop-shadow(0 0 30px rgba(220, 20, 60, 0.6)) blur(0px);
+    }
+    50% {
+        opacity: 0.5;
+        filter: drop-shadow(0 0 80px rgba(59, 89, 152, 0.6)) drop-shadow(0 0 40px rgba(220, 20, 60, 0.4)) blur(2px);
+    }
+    100% {
+        opacity: 0;
+        filter: drop-shadow(0 0 100px rgba(59, 89, 152, 0.2)) drop-shadow(0 0 50px rgba(220, 20, 60, 0.2)) blur(5px);
+        transform: scale(1.2);
+    }
+}
+
+.text-3d-container {
+    margin-top: 2rem;
+    perspective: 1000px;
+}
+
+.zyvox-text {
+    font-family: 'Outfit', sans-serif;
+    font-size: 8rem;
+    font-weight: 900;
+    letter-spacing: 0.2em;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    gap: 0.1em;
+}
+
+.letter {
+    display: inline-block;
+    background: linear-gradient(135deg, #e0e0ff 0%, #ffffff 50%, #c0d0ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 80px rgba(255, 255, 255, 0.6);
+    animation: letterEntrance 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+        letterFloat 3s ease-in-out infinite;
+    opacity: 0;
+    transform: translateZ(-200px) rotateY(90deg);
+}
+
+.intro-tagline {
+    margin-top: 2rem;
+    font-size: 1.5rem;
+    font-weight: 300;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.7);
+    animation: fadeInUp 1.5s ease-out 1.5s forwards;
+    opacity: 0;
+}
+
+.intro-overlay {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
+    pointer-events: none;
+}
+
+.intro-rays {
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.05) 50%, transparent 70%),
+        linear-gradient(-45deg, transparent 30%, rgba(200, 220, 255, 0.05) 50%, transparent 70%);
+    animation: raysRotate 10s linear infinite;
+    pointer-events: none;
+}
+
+/* Animations */
+@keyframes logoEntrance {
+    0% {
+        opacity: 0;
+        transform: scale(0.3) translateZ(-500px);
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1) translateZ(0);
+    }
+}
+
+@keyframes logoGlow {
+    0% {
+        filter: drop-shadow(0 0 60px rgba(255, 255, 255, 0.3)) drop-shadow(0 0 30px rgba(255, 255, 255, 0.2));
+    }
+
+    100% {
+        filter: drop-shadow(0 0 100px rgba(255, 255, 255, 0.5)) drop-shadow(0 0 50px rgba(255, 255, 255, 0.4));
+    }
+}
+
+@keyframes logoFloat {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+@keyframes logoRotate {
+    0% {
+        transform: rotateY(0deg);
+    }
+
+    50% {
+        transform: rotateY(360deg);
+    }
+
+    100% {
+        transform: rotateY(360deg);
+    }
+}
+
+@keyframes letterEntrance {
+    0% {
+        opacity: 0;
+        transform: translateZ(-200px) rotateY(90deg);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateZ(0) rotateY(0deg);
+    }
+}
+
+@keyframes letterFloat {
+
+    0%,
+    100% {
+        transform: translateY(0) translateZ(0);
+    }
+
+    50% {
+        transform: translateY(-10px) translateZ(20px);
+    }
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes raysRotate {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .intro-logo-wrapper {
+        width: 180px;
+        height: 180px;
+    }
+    
+    .intro-logo-image {
+        width: 180px;
+        height: 180px;
+    }
+    
+    .intro-logo-svg {
+        width: 150px;
+        height: 150px;
+    }
+
+    .intro-logo {
+        width: 120px;
+        height: 120px;
+    }
+
+    .zyvox-text {
+        font-size: 4rem;
+    }
+
+    .intro-tagline {
+        font-size: 1rem;
+    }
+}
