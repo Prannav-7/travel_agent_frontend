@@ -122,25 +122,38 @@ const Features = () => {
                 </div>
 
                 {/* Features Grid */}
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 perspective-container">
                     {features.map((feature, index) => (
                         <div
                             key={index}
-                            className="group glass rounded-2xl p-8 hover:bg-white/10 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-slate-500/20 cursor-pointer"
+                            className="group card-3d glass-layered rounded-2xl p-8 hover:bg-white/10 transition-all duration-500 cursor-pointer relative overflow-hidden"
                             style={{ animationDelay: `${index * 0.1}s` }}
                         >
-                            <div className="mb-6 transform group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300">
-                                {feature.icon}
+                            {/* Shimmer effect on hover */}
+                            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                                <div className="absolute inset-0 animate-shimmer"></div>
                             </div>
-                            <h3 className="text-xl font-semibold mb-3 group-hover:text-slate-200 transition-all">
-                                {feature.title}
-                            </h3>
-                            <p className="text-gray-400 leading-relaxed">
-                                {feature.description}
-                            </p>
 
-                            {/* Hover indicator */}
-                            <div className="mt-6 h-1 w-0 bg-gradient-to-r from-slate-500 to-slate-700 rounded-full group-hover:w-full transition-all duration-500"></div>
+                            {/* Holographic background */}
+                            <div className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity duration-500 holographic rounded-2xl"></div>
+
+                            <div className="relative z-10">
+                                <div className="mb-6 transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 animate-float-3d">
+                                    {feature.icon}
+                                </div>
+                                <h3 className="text-xl font-semibold mb-3 group-hover:text-slate-200 transition-all depth-layer-1">
+                                    {feature.title}
+                                </h3>
+                                <p className="text-gray-400 leading-relaxed depth-layer-2">
+                                    {feature.description}
+                                </p>
+
+                                {/* Hover indicator with 3D depth */}
+                                <div className="mt-6 h-1 w-0 bg-gradient-to-r from-slate-500 via-slate-600 to-slate-700 rounded-full group-hover:w-full transition-all duration-700 neon-glow depth-layer-3"></div>
+
+                                {/* Corner accent */}
+                                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-slate-500/0 via-slate-400/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                            </div>
                         </div>
                     ))}
                 </div>

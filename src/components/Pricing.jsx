@@ -76,71 +76,84 @@ const Pricing = () => {
 
                 {/* Billing Toggle */}
                 <div className="flex items-center justify-center gap-4 mb-12">
-                    <span className={`text-lg ${billingCycle === 'monthly' ? 'text-white font-semibold' : 'text-gray-400'}`}>
+                    <span className={`text-lg transition-all duration-300 ${billingCycle === 'monthly' ? 'text-white font-semibold scale-110' : 'text-gray-400'}`}>
                         Monthly
                     </span>
                     <button
                         onClick={() => setBillingCycle(billingCycle === 'monthly' ? 'yearly' : 'monthly')}
-                        className="relative w-16 h-8 bg-slate-700 rounded-full transition-colors border border-slate-600"
+                        className="relative w-16 h-8 bg-slate-700 rounded-full transition-all duration-300 border border-slate-600 btn-magnetic holographic neon-border"
                     >
-                        <div className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full transition-transform ${billingCycle === 'yearly' ? 'translate-x-8' : ''}`}></div>
+                        <div className={`absolute top-1 left-1 w-6 h-6 bg-gradient-to-r from-slate-200 to-white rounded-full transition-all duration-300 shadow-lg ${billingCycle === 'yearly' ? 'translate-x-8' : ''} animate-depth-pulse`}></div>
                     </button>
-                    <span className={`text-lg ${billingCycle === 'yearly' ? 'text-white font-semibold' : 'text-gray-400'}`}>
+                    <span className={`text-lg transition-all duration-300 ${billingCycle === 'yearly' ? 'text-white font-semibold scale-110' : 'text-gray-400'}`}>
                         Yearly
-                        <span className="ml-2 text-sm text-green-400">(Save 17%)</span>
+                        <span className="ml-2 text-sm text-green-400 animate-pulse">( Save 17%)</span>
                     </span>
                 </div>
 
                 {/* Pricing Cards */}
-                <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto perspective-container">
                     {plans.map((plan, index) => (
                         <div
                             key={index}
-                            className={`relative glass rounded-2xl p-8 hover:bg-white/10 transition-all duration-300 ${plan.popular ? 'ring-2 ring-slate-500 scale-105' : ''}`}
+                            className={`relative card-3d glass-layered rounded-2xl p-8 hover:bg-white/10 transition-all duration-500 overflow-hidden ${plan.popular ? 'ring-2 ring-slate-500 scale-105 animate-depth-pulse' : ''}`}
                             style={{ animationDelay: `${index * 0.1}s` }}
                         >
+                            {/* Shimmer effect */}
+                            <div className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-500">
+                                <div className="absolute inset-0 animate-shimmer"></div>
+                            </div>
+
+                            {/* Holographic background on hover */}
+                            <div className="absolute inset-0 opacity-0 hover:opacity-20 transition-opacity duration-500 holographic rounded-2xl"></div>
+
                             {/* Popular Badge */}
                             {plan.popular && (
-                                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-slate-600 to-slate-800 rounded-full text-sm font-semibold border border-slate-500">
+                                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-slate-600 to-slate-800 rounded-full text-sm font-semibold border border-slate-500 neon-border animate-float-3d">
                                     ⭐ Most Popular
                                 </div>
                             )}
 
-                            {/* Plan Name */}
-                            <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
-                            <p className="text-gray-400 text-sm mb-6">{plan.description}</p>
+                            <div className="relative z-10">
+                                {/* Plan Name */}
+                                <h3 className="text-2xl font-bold mb-2 depth-layer-1">{plan.name}</h3>
+                                <p className="text-gray-400 text-sm mb-6 depth-layer-1">{plan.description}</p>
 
-                            {/* Price */}
-                            <div className="mb-8">
-                                <div className="flex items-baseline gap-2">
-                                    <span className="text-5xl font-bold">
-                                        {billingCycle === 'monthly' ? plan.monthlyPrice : plan.yearlyPrice}
-                                    </span>
-                                    <span className="text-gray-400">
-                                        /{billingCycle === 'monthly' ? 'month' : 'year'}
-                                    </span>
+                                {/* Price */}
+                                <div className="mb-8 depth-layer-2">
+                                    <div className="flex items-baseline gap-2">
+                                        <span className="text-5xl font-bold neon-glow">
+                                            {billingCycle === 'monthly' ? plan.monthlyPrice : plan.yearlyPrice}
+                                        </span>
+                                        <span className="text-gray-400">
+                                            /{billingCycle === 'monthly' ? 'month' : 'year'}
+                                        </span>
+                                    </div>
                                 </div>
+
+                                {/* Features */}
+                                <ul className="space-y-4 mb-8 depth-layer-2">
+                                    {plan.features.map((feature, idx) => (
+                                        <li key={idx} className="flex items-start gap-3 group/item">
+                                            <svg className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5 group-hover/item:scale-110 transition-transform" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                            </svg>
+                                            <span className="text-gray-100 text-sm font-medium">{feature}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+
+                                {/* CTA Button */}
+                                <button className={`w-full py-4 rounded-full font-semibold transition-all duration-300 btn-magnetic depth-layer-3 ${plan.popular
+                                    ? 'bg-gradient-to-r from-slate-700 to-slate-900 hover:shadow-xl hover:shadow-slate-500/50 border border-slate-600 holographic neon-border'
+                                    : 'bg-white/5 hover:bg-white/10 border border-slate-600'
+                                    }`}>
+                                    Get Started
+                                </button>
                             </div>
 
-                            {/* Features */}
-                            <ul className="space-y-4 mb-8">
-                                {plan.features.map((feature, idx) => (
-                                    <li key={idx} className="flex items-start gap-3">
-                                        <svg className="w-5 h-5 text-cyan-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                                        </svg>
-                                        <span className="text-gray-100 text-sm font-medium">{feature}</span>
-                                    </li>
-                                ))}
-                            </ul>
-
-                            {/* CTA Button */}
-                            <button className={`w-full py-4 rounded-full font-semibold transition-all duration-300 hover:scale-105 ${plan.popular
-                                    ? 'bg-gradient-to-r from-slate-700 to-slate-900 hover:shadow-xl hover:shadow-slate-500/50 border border-slate-600'
-                                    : 'bg-white/5 hover:bg-white/10 border border-slate-600'
-                                }`}>
-                                Get Started
-                            </button>
+                            {/* Corner accent */}
+                            <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-slate-500/0 via-slate-400/5 to-transparent rounded-tr-full opacity-0 hover:opacity-100 transition-opacity duration-500"></div>
                         </div>
                     ))}
                 </div>
