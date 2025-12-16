@@ -6,7 +6,7 @@ const generateTravelPlanHtml = (formData) => {
     const childrenCount = parseInt(formData.children) || 0;
     const infantCount = parseInt(formData.infants) || 0;
     const totalTravelers = adultCount + childrenCount + infantCount;
-    
+
     return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -189,14 +189,19 @@ const generateTravelPlanHtml = (formData) => {
 const TravelPlanForm = ({ onClose, onSubmit }) => {
     const [currentStep, setCurrentStep] = useState(1);
     const [formData, setFormData] = useState({
-        // Basic Details (Step 1)
+        // User Details (Step 1)
+        fullName: '',
+        email: '',
+        mobile: '',
+
+        // Trip Details (Step 2)
         origin: '',
         destination: '',
         departure: '',
         return: '',
         tripType: 'round-trip',
-        
-        // Travelers & Budget (Step 2)
+
+        // Travelers & Budget (Step 3)
         adults: '1',
         children: '0',
         infants: '0',
@@ -221,17 +226,29 @@ const TravelPlanForm = ({ onClose, onSubmit }) => {
 
     const nextStep = () => {
         if (currentStep === 1) {
-            // Validate basic fields
+            // Validate user details
+            if (!formData.fullName || !formData.email || !formData.mobile) {
+                alert('Please fill in all required contact information');
+                return;
+            }
+            // Basic email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(formData.email)) {
+                alert('Please enter a valid email address');
+                return;
+            }
+        } else if (currentStep === 2) {
+            // Validate trip details
             if (!formData.origin || !formData.destination || !formData.departure || !formData.return) {
-                alert('Please fill in all required fields');
+                alert('Please fill in all required trip details');
                 return;
             }
         }
-        setCurrentStep(2);
+        setCurrentStep(currentStep + 1);
     };
 
     const prevStep = () => {
-        setCurrentStep(1);
+        setCurrentStep(currentStep - 1);
     };
 
     const handleSubmit = async (e) => {
@@ -256,15 +273,15 @@ const TravelPlanForm = ({ onClose, onSubmit }) => {
                 console.log('✅ Response received:', result);
                 console.log('📄 HTML data:', result.data);
                 setSubmitStatus('success');
-                
+
                 // Show processing message
                 setShowProcessing(true);
-                
+
                 // Wait a moment then show the HTML response
                 setTimeout(() => {
                     // Extract HTML from response (check if it's nested in data.text or data directly)
                     let htmlContent = null;
-                    
+
                     if (result.data) {
                         // Try to parse if it's a JSON string
                         try {
@@ -274,7 +291,7 @@ const TravelPlanForm = ({ onClose, onSubmit }) => {
                             htmlContent = result.data;
                         }
                     }
-                    
+
                     if (htmlContent && htmlContent.includes('<!DOCTYPE html>')) {
                         console.log('🎨 Setting HTML response');
                         setResponseHtml(htmlContent);
@@ -287,7 +304,7 @@ const TravelPlanForm = ({ onClose, onSubmit }) => {
                         setShowProcessing(false);
                     }
                 }, 1500);
-                
+
                 // Call parent onSubmit if provided
                 if (onSubmit) {
                     onSubmit(formData);
@@ -320,7 +337,7 @@ const TravelPlanForm = ({ onClose, onSubmit }) => {
                 {/* Show HTML Response if available */}
                 {responseHtml ? (
                     <div className="w-full">
-                        <div 
+                        <div
                             dangerouslySetInnerHTML={{ __html: responseHtml }}
                         />
                         <div className="p-6 text-center">
@@ -338,9 +355,9 @@ const TravelPlanForm = ({ onClose, onSubmit }) => {
                         <h2 className="text-2xl font-bold mb-4">Creating Your Travel Plan...</h2>
                         <p className="text-gray-400 mb-6">Our AI is crafting the perfect itinerary for you</p>
                         <div className="flex justify-center gap-2">
-                            <div className="w-3 h-3 bg-slate-500 rounded-full animate-bounce" style={{animationDelay: '0ms'}}></div>
-                            <div className="w-3 h-3 bg-slate-500 rounded-full animate-bounce" style={{animationDelay: '150ms'}}></div>
-                            <div className="w-3 h-3 bg-slate-500 rounded-full animate-bounce" style={{animationDelay: '300ms'}}></div>
+                            <div className="w-3 h-3 bg-slate-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                            <div className="w-3 h-3 bg-slate-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                            <div className="w-3 h-3 bg-slate-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                         </div>
                     </div>
                 ) : (
@@ -349,27 +366,92 @@ const TravelPlanForm = ({ onClose, onSubmit }) => {
                         <div className="mb-8 text-center">
                             <div className="text-5xl mb-4 animate-bounce-slow">✈️</div>
                             <h2 className="text-3xl font-bold mb-2">Plan Your Dream Trip</h2>
-                            <p className="text-gray-400">Step {currentStep} of 2</p>
+                            <p className="text-gray-400">Step {currentStep} of 3</p>
                         </div>
 
                         {/* Progress Bar */}
                         <div className="mb-8">
                             <div className="flex justify-between mb-2">
-                                <span className={`text-sm ${currentStep >= 1 ? 'text-slate-400' : 'text-gray-600'}`}>Basic Details</span>
-                                <span className={`text-sm ${currentStep >= 2 ? 'text-slate-400' : 'text-gray-600'}`}>Additional Info</span>
+                                <span className={`text-sm ${currentStep >= 1 ? 'text-slate-400' : 'text-gray-600'}`}>Contact</span>
+                                <span className={`text-sm ${currentStep >= 2 ? 'text-slate-400' : 'text-gray-600'}`}>Trip Details</span>
+                                <span className={`text-sm ${currentStep >= 3 ? 'text-slate-400' : 'text-gray-600'}`}>Preferences</span>
                             </div>
                             <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
-                                <div 
+                                <div
                                     className="h-full bg-gradient-to-r from-slate-500 to-slate-700 transition-all duration-500"
-                                    style={{ width: `${(currentStep / 2) * 100}%` }}
+                                    style={{ width: `${(currentStep / 3) * 100}%` }}
                                 ></div>
                             </div>
                         </div>
 
                         {/* Form */}
                         <form onSubmit={handleSubmit} className="space-y-6">
-                            {/* Step 1: Basic Details */}
+                            {/* Step 1: User Details */}
                             {currentStep === 1 && (
+                                <div className="space-y-6 animate-fade-in">
+                                    {/* Full Name */}
+                                    <div>
+                                        <label className="block text-sm font-medium mb-2">
+                                            Full Name <span className="text-red-400">*</span>
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="fullName"
+                                            value={formData.fullName}
+                                            onChange={handleChange}
+                                            required
+                                            placeholder="e.g., John Doe"
+                                            className="w-full px-4 py-3 bg-white/5 border border-slate-600 rounded-xl focus:outline-none focus:border-slate-400 transition-colors"
+                                        />
+                                    </div>
+
+                                    {/* Email & Mobile */}
+                                    <div className="grid md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-sm font-medium mb-2">
+                                                Email <span className="text-red-400">*</span>
+                                            </label>
+                                            <input
+                                                type="email"
+                                                name="email"
+                                                value={formData.email}
+                                                onChange={handleChange}
+                                                required
+                                                placeholder="e.g., john@example.com"
+                                                className="w-full px-4 py-3 bg-white/5 border border-slate-600 rounded-xl focus:outline-none focus:border-slate-400 transition-colors"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium mb-2">
+                                                Mobile Number <span className="text-red-400">*</span>
+                                            </label>
+                                            <input
+                                                type="tel"
+                                                name="mobile"
+                                                value={formData.mobile}
+                                                onChange={handleChange}
+                                                required
+                                                placeholder="e.g., +1 234 567 8900"
+                                                className="w-full px-4 py-3 bg-white/5 border border-slate-600 rounded-xl focus:outline-none focus:border-slate-400 transition-colors"
+                                            />
+                                        </div>
+                                    </div>
+
+
+
+                                    {/* Next Button */}
+                                    <button
+                                        type="button"
+                                        onClick={nextStep}
+                                        className="w-full py-4 bg-gradient-to-r from-slate-700 to-slate-900 rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-slate-500/50 transition-all duration-300 border border-slate-600 hover:scale-105"
+                                    >
+                                        Next Step →
+                                    </button>
+                                </div>
+                            )}
+
+                            {/* Step 2: Trip Details */}
+                            {currentStep === 2 && (
                                 <div className="space-y-6 animate-fade-in">
                                     {/* Origin & Destination */}
                                     <div className="grid md:grid-cols-2 gap-4">
@@ -383,7 +465,7 @@ const TravelPlanForm = ({ onClose, onSubmit }) => {
                                                 value={formData.origin}
                                                 onChange={handleChange}
                                                 required
-                                                placeholder="e.g., New York"
+                                                placeholder="e.g., Erode"
                                                 className="w-full px-4 py-3 bg-white/5 border border-slate-600 rounded-xl focus:outline-none focus:border-slate-400 transition-colors"
                                             />
                                         </div>
@@ -397,7 +479,7 @@ const TravelPlanForm = ({ onClose, onSubmit }) => {
                                                 value={formData.destination}
                                                 onChange={handleChange}
                                                 required
-                                                placeholder="e.g., Paris"
+                                                placeholder="e.g., Chennai"
                                                 className="w-full px-4 py-3 bg-white/5 border border-slate-600 rounded-xl focus:outline-none focus:border-slate-400 transition-colors"
                                             />
                                         </div>
@@ -435,37 +517,28 @@ const TravelPlanForm = ({ onClose, onSubmit }) => {
                                         </div>
                                     </div>
 
-                                    {/* Trip Type */}
-                                    <div>
-                                        <label className="block text-sm font-medium mb-2">
-                                            Trip Type
-                                        </label>
-                                        <select
-                                            name="tripType"
-                                            value={formData.tripType}
-                                            onChange={handleChange}
-                                            className="w-full px-4 py-3 bg-black text-white border border-slate-600 rounded-xl focus:outline-none focus:border-slate-400 transition-colors"
-                                            style={{colorScheme: 'dark'}}
+                                    {/* Navigation Buttons */}
+                                    <div className="flex gap-4">
+                                        <button
+                                            type="button"
+                                            onClick={prevStep}
+                                            className="flex-1 py-4 bg-white/5 border border-slate-600 rounded-xl font-semibold text-lg hover:bg-white/10 transition-all duration-300"
                                         >
-                                            <option value="round-trip">Round Trip</option>
-                                            <option value="one-way">One Way</option>
-                                            <option value="multi-city">Multi-City</option>
-                                        </select>
+                                            ← Back
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={nextStep}
+                                            className="flex-1 py-4 bg-gradient-to-r from-slate-700 to-slate-900 rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-slate-500/50 transition-all duration-300 border border-slate-600 hover:scale-105"
+                                        >
+                                            Next Step →
+                                        </button>
                                     </div>
-
-                                    {/* Next Button */}
-                                    <button
-                                        type="button"
-                                        onClick={nextStep}
-                                        className="w-full py-4 bg-gradient-to-r from-slate-700 to-slate-900 rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-slate-500/50 transition-all duration-300 border border-slate-600 hover:scale-105"
-                                    >
-                                        Next Step →
-                                    </button>
                                 </div>
                             )}
 
-                            {/* Step 2: Additional Details */}
-                            {currentStep === 2 && (
+                            {/* Step 3: Preferences & Budget */}
+                            {currentStep === 3 && (
                                 <div className="space-y-6 animate-fade-in">
                                     {/* Travelers Section */}
                                     <div className="bg-white/5 p-6 rounded-xl border border-slate-600">
@@ -512,7 +585,7 @@ const TravelPlanForm = ({ onClose, onSubmit }) => {
                                                 value={formData.groupType}
                                                 onChange={handleChange}
                                                 className="w-full px-4 py-3 bg-black text-white border border-slate-600 rounded-xl focus:outline-none focus:border-slate-400 transition-colors"
-                                                style={{colorScheme: 'dark'}}
+                                                style={{ colorScheme: 'dark' }}
                                             >
                                                 <option value="family">Family</option>
                                                 <option value="friends">Friends</option>
@@ -549,7 +622,7 @@ const TravelPlanForm = ({ onClose, onSubmit }) => {
                                                     value={formData.currency}
                                                     onChange={handleChange}
                                                     className="w-full px-4 py-3 bg-black text-white border border-slate-600 rounded-xl focus:outline-none focus:border-slate-400 transition-colors"
-                                                    style={{colorScheme: 'dark'}}
+                                                    style={{ colorScheme: 'dark' }}
                                                 >
                                                     <option value="USD">USD ($)</option>
                                                     <option value="EUR">EUR (€)</option>
@@ -572,7 +645,7 @@ const TravelPlanForm = ({ onClose, onSubmit }) => {
                                             value={formData.accommodation}
                                             onChange={handleChange}
                                             className="w-full px-4 py-3 bg-black text-white border border-slate-600 rounded-xl focus:outline-none focus:border-slate-400 transition-colors"
-                                            style={{colorScheme: 'dark'}}
+                                            style={{ colorScheme: 'dark' }}
                                         >
                                             <option value="any">Any</option>
                                             <option value="hotel">Hotel</option>
@@ -610,9 +683,8 @@ const TravelPlanForm = ({ onClose, onSubmit }) => {
                                         <button
                                             type="submit"
                                             disabled={isSubmitting}
-                                            className={`flex-1 py-4 bg-gradient-to-r from-slate-700 to-slate-900 rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-slate-500/50 transition-all duration-300 border border-slate-600 ${
-                                                isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'
-                                            }`}
+                                            className={`flex-1 py-4 bg-gradient-to-r from-slate-700 to-slate-900 rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-slate-500/50 transition-all duration-300 border border-slate-600 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'
+                                                }`}
                                         >
                                             {isSubmitting ? (
                                                 <span className="flex items-center justify-center gap-2">
